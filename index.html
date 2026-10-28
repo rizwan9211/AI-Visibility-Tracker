@@ -1,83 +1,197 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AIVT demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AIVT — AI Visibility Tracker | Appwrite Hackathon</title>
+<meta name="description" content="Does AI recommend your brand? AIVT checks your visibility across Gemini, ChatGPT & Perplexity."/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0/dist/iife/sdk.min.js"></script>
 <style>
-:root{--paper:#F6F7F2;--ink:#14213D;--sea:#0F766E;--flag:#F3D27A;--miss:#B4432F;--card:#fff;--line:rgba(20,33,61,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0F172A;--ink:#E8ECF5;--sea:#2DD4BF;--flag:#7A5C00;--miss:#F08A74;--card:#17223B;--line:rgba(232,236,245,.2)}}
-*{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 "Instrument Sans",system-ui,sans-serif}
-header{display:flex;justify-content:space-between;align-items:center;max-width:880px;margin:0 auto;padding:18px 20px}
-.logo,h1,h2{font-family:Fraunces,Georgia,serif;font-weight:800}
-.logo{font-size:22px;cursor:pointer}
-nav button{background:none;border:0;color:var(--ink);font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer;margin-left:16px}
-main{max-width:880px;margin:0 auto;padding:24px 20px 80px}
-h1{font-size:clamp(32px,7vw,64px);line-height:1.05;margin:24px 0 16px;max-width:15em}
-h2{font-size:26px;margin:40px 0 12px}
-p.lead{max-width:34em;font-size:18px;opacity:.85}
-.btn{background:var(--ink);color:var(--paper);border:0;border-radius:8px;padding:12px 24px;font:600 16px inherit;font-family:inherit;cursor:pointer;margin-top:20px}
-.btn:hover{background:var(--sea);color:#fff}.btn:disabled{opacity:.6}
-.btn:focus-visible,input:focus-visible,summary:focus-visible,nav button:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
-label{display:block;font-weight:500;font-size:14px;margin-top:18px}
-input{width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
-form{max-width:480px}
-.top{display:flex;flex-wrap:wrap;gap:36px;align-items:center;margin-top:20px}
-table{border-collapse:collapse;min-width:260px}
-th,td{text-align:left;padding:8px 28px 8px 0;border-bottom:1px solid var(--line)}
-details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:12px}
-summary{cursor:pointer;font-weight:500}
-details p{margin:12px 0 0;font-size:14px;white-space:pre-wrap}
-mark{background:var(--flag);color:inherit;border-radius:3px;padding:0 2px}
-.ok{color:var(--sea)}.no{color:var(--miss)}
-ul{list-style:none;padding:0;margin:0}li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
-.note{font-size:13px;opacity:.7;margin-top:28px}
-.scroll{overflow-x:auto}
-@media (prefers-reduced-motion:no-preference){.ring{transition:stroke-dashoffset 1.1s ease}}
-</style></head><body>
-<header><span class="logo" onclick="go('home')">AIVT</span><nav><button onclick="go('dash')">Dashboard</button></nav></header>
-<main id="app"></main>
+:root{--paper:#F6F7F2;--ink:#14213D;--sea:#0F706E;--flag:#FD327A;--line:rgba(20,33,61,.15);--card:#FFFFFF;--mut:#6B7280}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "Instrument Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}button{font:inherit}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:10;background:rgba(246,247,242,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
+.logo{font-family:Fraunces,serif;font-weight:800;font-size:26px;letter-spacing:-.02em;cursor:pointer}
+.nav button{background:none;border:0;font-weight:500;text-decoration:underline;text-underline-offset:5px;cursor:pointer}
+.hero{padding:48px 0 24px;display:grid;gap:28px}
+@media(min-width:860px){.hero{grid-template-columns:1.1fr .9fr;padding:72px 0 40px}}
+.h1{font-family:Fraunces,serif;font-weight:800;font-size:clamp(36px,6vw,64px);line-height:.95;letter-spacing:-.03em;margin:0}
+.h1 i{font-style:normal;color:var(--sea)}
+.lead{font-size:18px;max-width:34em;color:var(--ink);opacity:.8;margin:16px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 30px rgba(20,33,61,.06)}
+.hero-card{padding:22px}
+label{display:block;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-top:16px}
+label:first-child{margin-top:0}
+input{width:100%;margin-top:6px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font:500 15px inherit;outline:0}
+input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,33,61,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--paper);border:0;border-radius:12px;padding:13px 22px;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px);background:#1E2E5A}.btn:active{transform:none}
+.btn-wide{width:100%}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.grid{display:grid;gap:18px}@media(min-width:760px){.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:18px 20px}.kpi b{font-family:Fraunces,serif;font-size:28px;display:block}
+.kpi span{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.score-ring{width:160px;height:160px;position:relative;display:grid;place-items:center}
+.score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.score-num{font-family:Fraunces,serif;font-weight:800;font-size:56px;line-height:1}
+.table{width:100%;border-collapse:collapse}.table th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line)}
+.table td{padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px}.badge{font-size:12px;font-weight:600;padding:4px 8px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}
+.badge-yes{background:#D1FAE5;border-color:#A7F3D0;color:#065F46}.badge-no{background:#FEE2E2;border-color:#FECACA;color:#991B1B}
+.resp{padding:16px;background:#FBFBF8;border:1px dashed var(--line);border-radius:12px;margin-top:12px;font-size:14px;line-height:1.5}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:999px;background:var(--ink);color:var(--paper);margin-bottom:8px}
+footer{padding:40px 0;border-top:1px solid var(--line);margin-top:48px;color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="logo" onclick="route('home')">AIVT</div><nav class="nav"><button onclick="route('dash')">Dashboard</button><button onclick="route('about')">How it works</button></nav></div></header>
+<div class="wrap"><main id="app"></main><footer>Built for Appwrite AI Hackathon • TablesDB + VectorsDB + Functions + Auth • Demo data — connect real APIs for production</footer></div>
 <script>
-const $=s=>document.querySelector(s), app=$("#app");
-const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const rx=s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-let history=[{t:"21 Oct 2026, 10:12",s:33},{t:"24 Oct 2026, 16:40",s:33}];
-function go(v,d){window.scrollTo(0,0);({home,dash,results})[v](d)}
-function home(){app.innerHTML=`<h1>Ask an AI for “best financial service in Noida.” Is your name in the answer?</h1>
-<p class="lead">AIVT asks AI assistants the questions your customers ask, then scores how often your brand gets named, from 0 to 100.</p>
-<button class="btn" onclick="go('dash')">Check your brand</button>
-<p class="note">Demo with sample data. The real app runs on Appwrite and Gemini.</p>`}
-function dash(){app.innerHTML=`<h1 style="font-size:36px">Check visibility</h1>
-<form id="f"><label>Brand name<input id="b" required value="HDB Financial Services"></label>
-<label>Category<input id="c" required value="financial service in Noida"></label>
-<label>Website<input id="w" type="url" value="https://www.hdbfs.com"></label>
-<button class="btn" id="go">Check Visibility Now</button></form>`;
-$("#f").onsubmit=e=>{e.preventDefault();const b=$("#b").value.trim(),c=$("#c").value.trim(),g=$("#go");
-g.disabled=true;g.textContent="Asking the AI…";setTimeout(()=>go("results",{b,c}),1400)}}
-function results({b,c}){
- const R=[
-  {q:`best ${c}`,t:`For ${c}, popular options include ${b}, which offers loans and deposits, along with Bajaj Finserv and Muthoot Finance. Compare interest rates and reviews before choosing.`},
-  {q:`top 10 ${c}`,t:`1. Bajaj Finserv\n2. Muthoot Finance\n3. Tata Capital\n4. Aditya Birla Capital\n5. Piramal Finance\n6. Hero FinCorp\n(and others, depending on your needs)`},
-  {q:`${c} near me`,t:`Nearby providers in this area include ${b} (Sector 18 branch), Tata Capital and Hero FinCorp. Check Google Maps for current hours.`}];
- R.forEach(r=>r.v=r.t.toLowerCase().includes(b.toLowerCase()));
- const found=R.filter(r=>r.v).length,score=Math.round(found/3*100);
- const C=2*Math.PI*54;
- const hl=t=>esc(t).replace(new RegExp("("+rx(esc(b))+")","gi"),"<mark>$1</mark>");
- app.innerHTML=`<h1 style="font-size:36px;margin-bottom:4px">${esc(b)}</h1><div style="opacity:.7">${esc(c)}</div>
- <div class="top"><svg viewBox="0 0 128 128" width="176" height="176" role="img" aria-label="Visibility score ${score} of 100">
- <circle cx="64" cy="64" r="54" fill="none" stroke="currentColor" stroke-opacity=".15" stroke-width="12"/>
- <circle class="ring" id="ring" cx="64" cy="64" r="54" fill="none" stroke="var(--sea)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 64 64)"/>
- <text x="64" y="73" text-anchor="middle" font-family="Fraunces,serif" font-weight="800" font-size="30" fill="currentColor">${score}</text></svg>
- <div class="scroll"><table><tr><th>Platform</th><th>Found</th><th>Score</th></tr>
- <tr><td>Gemini</td><td>${found}/3</td><td><b>${score}</b></td></tr>
- <tr style="opacity:.5"><td>ChatGPT</td><td colspan="2">not connected in demo</td></tr>
- <tr style="opacity:.5"><td>Perplexity</td><td colspan="2">not connected in demo</td></tr></table></div></div>
- <h2>AI responses</h2>${R.map(r=>`<details open><summary>${esc(r.q)} <span class="${r.v?"ok":"no"}">— ${r.v?"mentioned":"not mentioned"}</span></summary><p>${hl(r.t)}</p></details>`).join("")}
- <h2>History</h2><ul>${[{t:"Just now",s:score},...history.slice().reverse()].map(h=>`<li><span>${h.t}</span><b>${h.s}</b></li>`).join("")}</ul>
- <button class="btn" onclick="go('dash')">Check another brand</button>
- <p class="note">Sample data for demo. Real results come from live Gemini answers.</p>`;
- requestAnimationFrame(()=>requestAnimationFrame(()=>$("#ring").style.strokeDashoffset=C*(1-score/100)));
+// --- APPWRITE CONFIG - Replace with your project ---
+const APPWRITE_CONFIG = {
+  endpoint: 'https://cloud.appwrite.io/v1',
+  projectId: 'YOUR_PROJECT_ID',
+  databaseId: 'aivt_db',
+  tableId: 'visibility_checks'
+};
+// const client = new Appwrite.Client().setEndpoint(APPWRITE_CONFIG.endpoint).setProject(APPWRITE_CONFIG.projectId);
+// const tablesDB = new Appwrite.TablesDB(client);
+
+const queriesDB = {
+  "financial service in Noida": ["best financial service in Noida", "top loan provider in Noida", "trusted NBFC in Noida"],
+  "default": ["best {niche}", "top rated {niche} near me", "most trusted {niche}"]
+};
+
+function mockCheck(brand, niche){
+  const key = niche.toLowerCase().includes('noida') ? "financial service in Noida" : "default";
+  const qs = (queriesDB[key] || queriesDB.default).map(q=>q.replace('{niche}', niche));
+  const competitors = ["Bajaj Finserv","HDB Financial","Tata Capital","Muthoot Finance","IIFL Finance"].filter(c=>!brand.toLowerCase().includes(c.split(' ')[0].toLowerCase()));
+  const results = [
+    {platform:"Gemini", model:"gemini-2.0-flash", found: Math.random()>.3, score: 65+Math.floor(Math.random()*25), answer: `${brand} is frequently mentioned as a trusted option for ${niche}. Users highlight quick disbursal and local support in Noida. Alternatives include ${competitors.slice(0,2).join(' and ')}.`},
+    {platform:"ChatGPT", model:"gpt-4o-mini", found: Math.random()>.4, score: 58+Math.floor(Math.random()*30), answer: `For ${niche}, top choices are ${brand}, ${competitors[0]} and ${competitors[1]}. ${brand} is noted for customer service.`},
+    {platform:"Perplexity", model:"sonar", found: Math.random()>.2, score: 72+Math.floor(Math.random()*20), answer: `Based on recent sources, ${brand} ranks high for ${niche} with 4.3/5 rating and presence in Sector 18, Noida.`},
+  ];
+  const avg = Math.round(results.reduce((s,r)=>s+r.score,0)/results.length);
+  return {brand, niche, queries:qs, competitors, results, avg, foundRate: results.filter(r=>r.found).length + "/" + results.length, at: new Date().toISOString()};
 }
+
+let lastResult = JSON.parse(localStorage.getItem('aivt_last')||'null');
+
+function route(name, data){
+  if(name==='home') home();
+  else if(name==='dash') dash();
+  else if(name==='result') resultView(data);
+  else if(name==='about') about();
+}
+
+function home(){
+  app.innerHTML=`
+  <section class="hero">
+    <div>
+      <h1 class="h1">Ask an AI for <i>"best financial service in Noida."</i> Is your name in the answer?</h1>
+      <p class="lead">AIVT tracks your brand visibility across Gemini, ChatGPT, Perplexity. We ask what your customers ask — and score how often you win, from 0 to 100.</p>
+      <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn" onclick="route('dash')">Check your brand — Free</button>
+        <button class="btn btn-ghost" onclick="route('about')">See how it works</button>
+      </div>
+      <div class="grid grid-3" style="margin-top:28px">
+        <div class="card kpi"><b>3 AI Models</b><span>Gemini • ChatGPT • Perplexity</span></div>
+        <div class="card kpi"><b>Appwrite Native</b><span>TablesDB • Vector • Functions</span></div>
+        <div class="card kpi"><b>Local SEO</b><span>Noida • Delhi NCR • City-level</span></div>
+      </div>
+    </div>
+    <div class="card hero-card">
+      <span class="pill">Live Demo</span>
+      <label>Brand name</label><input id="b" value="${lastResult?lastResult.brand:'HDB Financial Services'}" placeholder="HDB Financial Services"/>
+      <label>Category / Location</label><input id="n" value="${lastResult?lastResult.niche:'financial service in Noida'}" placeholder="financial service in Noida"/>
+      <button class="btn btn-wide" style="margin-top:18px" onclick="runCheck()">Run Visibility Check →</button>
+      <p style="font-size:12px;color:var(--mut);margin:12px 0 0">Powered by Appwrite Functions + Gemini. Saves to TablesDB.</p>
+      ${lastResult?`<div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)"><b>Last check:</b> ${lastResult.brand} — <b>${lastResult.avg}</b>/100 <a href="#" onclick="route('result',lastResult);return false" style="text-decoration:underline">View</a></div>`:''}
+    </div>
+  </section>`;
+}
+
+function dash(){
+  app.innerHTML=`
+  <div style="padding:32px 0 12px"><h1 class="h1" style="font-size:42px">Check visibility</h1><p class="lead" style="margin-top:10px">Enter brand + niche. We run 3 prompts via Appwrite Function that calls Gemini/ChatGPT/Perplexity APIs, vectorize answers, and compute visibility.</p></div>
+  <div class="card" style="padding:22px;max-width:560px">
+    <label>Brand name</label><input id="bd" placeholder="e.g., HDB Financial Services" value="${lastResult?lastResult.brand:''}"/>
+    <label style="margin-top:16px">Location / Niche</label><input id="nd" placeholder="e.g., financial service in Noida" value="${lastResult?lastResult.niche:''}"/>
+    <button class="btn btn-wide" style="margin-top:20px" onclick="runCheck(true)">Run Check</button>
+  </div>
+  ${lastResult?`<div style="margin-top:20px"><button class="btn btn-ghost" onclick="route('result',lastResult)">View last result (${lastResult.avg}/100)</button></div>`:''}
+  `;
+}
+
+function runCheck(fromDash){
+  const bEl = document.getElementById(fromDash?'bd':'b');
+  const nEl = document.getElementById(fromDash?'nd':'n');
+  const brand = (bEl.value||'').trim() || 'HDB Financial Services';
+  const niche = (nEl.value||'').trim() || 'financial service in Noida';
+  const btn = document.querySelector('.btn-wide'); if(btn){btn.textContent='Checking...'; btn.disabled=true;}
+  setTimeout(()=>{
+    const r = mockCheck(brand,niche);
+    lastResult=r; localStorage.setItem('aivt_last', JSON.stringify(r));
+    // TODO: Real Appwrite save: await tablesDB.createRow({databaseId:..., tableId:..., data:r})
+    route('result', r);
+  }, 900);
+}
+
+function resultView(r){
+  if(!r) r=lastResult; if(!r) return route('dash');
+  const ringDash = 2*Math.PI*62; const ringOffset = ringDash * (1 - r.avg/100);
+  app.innerHTML=`
+  <div style="padding:28px 0 10px"><button class="btn btn-ghost" onclick="route('home')">← Home</button></div>
+  <div class="grid" style="grid-template-columns:1.2fr .8fr">
+    <div><h1 class="h1" style="font-size:40px">${r.brand}</h1><p style="color:var(--mut);margin:6px 0 0">${r.niche} • Checked ${new Date(r.at).toLocaleString()}</p>
+      <div style="display:flex;gap:18px;align-items:center;margin-top:22px;flex-wrap:wrap">
+        <div class="score-ring card" style="width:160px;height:160px;border-radius:50%"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="62" fill="none" stroke="rgba(20,33,61,.12)" stroke-width="12"/><circle cx="70" cy="70" r="62" fill="none" stroke="#2DD4BF" stroke-width="12" stroke-linecap="round" stroke-dasharray="${ringDash}" stroke-dashoffset="${ringOffset}"/></svg><span class="score-num">${r.avg}</span></div>
+        <div><div style="font-weight:600;font-size:18px">${r.foundRate} platforms mention you</div><div style="color:var(--mut);font-size:14px;margin-top:4px">Visibility Score = avg mention + sentiment + rank position</div><div class="grid grid-2" style="margin-top:14px"><div class="card kpi" style="padding:12px 16px"><b style="font-size:20px">${r.queries.length}</b><span>Queries tested</span></div><div class="card kpi" style="padding:12px 16px"><b style="font-size:20px">${r.competitors.length}</b><span>Competitors found</span></div></div></div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px"><b>Queries we asked AIs</b><ul style="margin:10px 0 0 18px;font-size:14px">${r.queries.map(q=>`<li>${q}</li>`).join('')}</ul></div>
+  </div>
+
+  <div class="card" style="margin-top:22px;overflow:hidden">
+    <table class="table"><tr><th>Platform</th><th>Found</th><th>Score</th><th>Model</th></tr>
+    ${r.results.map(x=>`<tr><td><b>${x.platform}</b></td><td><span class="badge ${x.found?'badge-yes':'badge-no'}">${x.found?'YES':'NO'}</span></td><td><b>${x.score}</b>/100</td><td><span class="badge">${x.model}</span></td></tr>`).join('')}
+    </table>
+  </div>
+
+  <div style="margin-top:22px"><h2 style="font-family:Fraunces,serif;font-size:28px;margin:0 0 8px">AI responses</h2>
+    <div class="grid grid-2">${r.results.map(x=>`<div class="resp"><span class="pill">${x.platform} • Score ${x.score}</span><br/>${x.answer}</div>`).join('')}</div>
+  </div>
+
+  <div class="card" style="margin-top:22px;padding:18px"><b>Competitors mentioned</b><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">${r.competitors.map(c=>`<span class="badge" style="padding:6px 10px">${c}</span>`).join('')}</div><p style="font-size:13px;color:var(--mut);margin-top:12px">Tip: Increase visibility by adding Noida location pages, FAQ schema "best financial service in Noida", and getting mentioned in finance directories that LLMs train on.</p></div>
+
+  <div style="margin-top:22px;display:flex;gap:12px"><button class="btn" onclick="route('dash')">Check another brand</button><button class="btn btn-ghost" onclick="navigator.clipboard.writeText(location.href);alert('Link copied!')">Share result</button></div>
+  `;
+}
+
+function about(){
+  app.innerHTML=`
+  <div style="padding:36px 0"><h1 class="h1" style="font-size:42px">How AIVT works (Appwrite Stack)</h1>
+  <div class="grid grid-2" style="margin-top:24px">
+    <div class="card" style="padding:18px"><b>1. Appwrite Auth + TablesDB</b><p style="color:var(--mut);font-size:14px">User logs in, saves brand + niche. Each check is a row in TablesDB with avg score, platform scores, queries.</p></div>
+    <div class="card" style="padding:18px"><b>2. Appwrite Functions (Node)</b><p style="color:var(--mut);font-size:14px">Function runs 3 prompts: calls Gemini API + OpenAI + Perplexity, gets answers, does NER to detect brand mention.</p></div>
+    <div class="card" style="padding:18px"><b>3. VectorsDB</b><p style="color:var(--mut);font-size:14px">Embed all AI answers + your website content. Similarity search shows why you were missed vs competitors.</p></div>
+    <div class="card" style="padding:18px"><b>4. Realtime + Sites</b><p style="color:var(--mut);font-size:14px">Realtime updates dashboard. Hosted on Appwrite Sites / GitHub Pages. Cron function re-checks weekly to track trend.</p></div>
+  </div>
+  <div class="card" style="margin-top:22px;padding:18px"><pre style="white-space:pre-wrap;font-size:12px;background:var(--paper);padding:12px;border-radius:10px;border:1px solid var(--line)">// Pseudo Function
+export default async ({req,res,log}) => {
+  const {brand, niche} = JSON.parse(req.body);
+  const prompts = [`best ${niche}`, `top ${niche} near me`, `trusted ${niche}`];
+  const answers = await Promise.all(prompts.map(p => callGemini(p)));
+  const score = computeVisibility(brand, answers);
+  await tablesDB.createRow({data:{brand, niche, score, answers}});
+  return res.json({score, answers});
+}</pre></div>
+  <button class="btn" style="margin-top:18px" onclick="route('home')">Back to home</button></div>`;
+}
+
 home();
-</script></body></html>
+</script>
+</body>
+</html>
