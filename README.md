@@ -5,7 +5,7 @@
 Ask "best financial service in Noida" to Gemini/ChatGPT/Perplexity - Is your brand in answer? AIVT checks.
 
 🔗 Live Demo: https://rizwan9211.github.io/AI-Visibility-Tracker/
-📹 Video: [YouTube link add karna]
+📹 Video: https://youtube.com/shorts/4YxKg0Wgf8c?feature=shared
 
 ### Problem
 Local brands spend on Google SEO but 60% customers now ask AI. If AI doesn't mention you, you don't exist.
